@@ -4,9 +4,77 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/sqweek/dialog"
+	"io"
+	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 )
+
+func batchExecution(commandLines []string) {
+	// 获取当前工作目录的路径
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal("Error:", err)
+	}
+
+	// 读取当前文件夹的文件列表
+	files, err := ioutil.ReadDir(currentDir)
+	if err != nil {
+		log.Fatal("Error:", err)
+	}
+
+	// 遍历文件列表
+	for _, file := range files {
+		// 检查文件是否为 TOML 文件
+		if !file.IsDir() && strings.HasSuffix(file.Name(), ".toml") {
+			fmt.Println("TOML file:", file.Name())
+
+			// 进入 KimariDraw 程序
+			cmd := exec.Command("kimaridraw.exe", file.Name())
+			// 设置终端的编码为 UTF-8
+			cmd.Env = append(cmd.Env, "PYTHONIOENCODING=utf-8")
+			// 设置 HOME 环境变量
+			cmd.Env = append(os.Environ(), "HOME="+currentDir)
+
+			// 获取标准输入管道
+			stdin, err := cmd.StdinPipe()
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+
+			// 启动进程
+			e := cmd.Start()
+			if err != nil {
+				fmt.Println("Error starting process:", e)
+				return
+			}
+
+			// 执行命令
+			for _, line := range commandLines {
+				// 进入 KimariDraw 程序后以此执行 txt 命令中的内容
+				_, err := io.WriteString(stdin, line+"\n")
+				if err != nil {
+					fmt.Println("Error:", err)
+					return
+				}
+			}
+
+			// 关闭标准输入管道
+			stdin.Close()
+
+			// 等待进程完成
+			err = cmd.Wait()
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
+
+		}
+	}
+
+}
 
 func readCommandsFromFile(filePath string) ([]string, error) {
 	// 打开文件
@@ -73,7 +141,8 @@ func getCommandLines() ([]string, error) {
 				continue
 			}
 
-			fmt.Println("File path:", filePath)
+			fmt.Println("Selected file path:", filePath)
+			fmt.Println()
 			commandLines = append(commandLines, lines...)
 			// 跳出循环
 			break
@@ -96,20 +165,18 @@ func getCommandLines() ([]string, error) {
 }
 
 func showHead() {
-	welcome := `
-====================================================================
-==      ========================       =============================
-=  ====  =======================  ====  ============================
-=  ====  =======================  ====  ============================
-==  =======    ====   ====   ===  ====  ==  =   ====   ===  =   =  =
-====  =====  =  ==  =  ==  =  ==  ====  ==    =  ==  =  ==  =   =  =
-======  ===  =  ==     ==  =====  ====  ==  ==========  ===   =   ==
-=  ====  ==    ===  =====  =====  ====  ==  ========    ===   =   ==
-=  ====  ==  =====  =  ==  =  ==  ====  ==  =======  =  ==== === ===
-==      ===  ======   ====   ===       ===  ========    ==== === ===
-====================================================================
-`
-	fmt.Println(welcome)
+
+	fmt.Println("====================================================================")
+	fmt.Println("==      ========================       =============================")
+	fmt.Println("=  ====  =======================  ====  ============================")
+	fmt.Println("=  ====  =======================  ====  ============================")
+	fmt.Println("==  =======    ====   ====   ===  ====  ==  =   ====   ===  =   =  =")
+	fmt.Println("====  =====  =  ==  =  ==  =  ==  ====  ==    =  ==  =  ==  =   =  =")
+	fmt.Println("======  ===  =  ==     ==  =====  ====  ==  ==========  ===   =   ==")
+	fmt.Println("=  ====  ==    ===  =====  =====  ====  ==  ========    ===   =   ==")
+	fmt.Println("=  ====  ==  =====  =  ==  =  ==  ====  ==  =======  =  ==== === ===")
+	fmt.Println("==      ===  ======   ====   ===       ===  ========    ==== === ===")
+	fmt.Println("====================================================================")
 	fmt.Println()
 }
 
@@ -122,6 +189,7 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
-	fmt.Println("Command lines:", commandLines)
+	batchExecution(commandLines)
+	fmt.Println()
 	fmt.Println("Program finished.")
 }
