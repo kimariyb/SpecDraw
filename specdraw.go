@@ -9,7 +9,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
+	"time"
 )
 
 func batchExecution(commandLines []string) {
@@ -165,18 +167,33 @@ func getCommandLines() ([]string, error) {
 }
 
 func showHead() {
+	// 获取当前文件的绝对路径
+	filePath, err := filepath.Abs(os.Args[0])
+	if err != nil {
+		fmt.Println("获取文件路径失败:", err)
+		return
+	}
 
-	fmt.Println("====================================================================")
-	fmt.Println("==      ========================       =============================")
-	fmt.Println("=  ====  =======================  ====  ============================")
-	fmt.Println("=  ====  =======================  ====  ============================")
-	fmt.Println("==  =======    ====   ====   ===  ====  ==  =   ====   ===  =   =  =")
-	fmt.Println("====  =====  =  ==  =  ==  =  ==  ====  ==    =  ==  =  ==  =   =  =")
-	fmt.Println("======  ===  =  ==     ==  =====  ====  ==  ==========  ===   =   ==")
-	fmt.Println("=  ====  ==    ===  =====  =====  ====  ==  ========    ===   =   ==")
-	fmt.Println("=  ====  ==  =====  =  ==  =  ==  ====  ==  =======  =  ==== === ===")
-	fmt.Println("==      ===  ======   ====   ===       ===  ========    ==== === ===")
-	fmt.Println("====================================================================")
+	// 获取最后修改时间的时间戳
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		fmt.Println("获取文件信息失败:", err)
+		return
+	}
+	modTime := fileInfo.ModTime()
+	timestamp := modTime.Format("2006-Jan-02")
+
+	fmt.Println("SpecDraw -- A script that automatically calls KimariDraw to generate pictures in batches")
+	fmt.Println("Version: v1.1.0, release date:", timestamp)
+	fmt.Println("Developer: Kimariyb, Ryan Hsiun")
+	fmt.Println("Address: XiaMen University, School of Electronic Science and Engineering")
+	fmt.Println("Website: https://github.com/kimariyb/SpecDraw")
+
+	// 获取当前日期和时间
+	now := time.Now().Format("Jan-02-2006, 15:04:05")
+
+	// 输出版权信息和问候语
+	fmt.Printf("(Copyright 2023 Kimariyb. Currently timeline: %s)\n", now)
 	fmt.Println()
 }
 
