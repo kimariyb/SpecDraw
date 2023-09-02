@@ -17,6 +17,8 @@ KimariDraw 是 Kimariyb 用 Python 编写的绘图脚本，用于处理 Multiwfn
 %PYTHON_HOME%/Scripts/
 ```
 
+安装 KimariDraw 程序，详细信息请浏览 KimariDraw 的主页： https://github.com/kimariyb/kimariDraw
+
 准备一个 `.txt` 文件，假设这个文件名为 `draw.txt`，该文件记录了 KimariDraw 程序中的命令。
 
 ```text
