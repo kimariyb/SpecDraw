@@ -78,10 +78,6 @@ func batchExecution(commandLines []string) {
 
 			// 等待进程完成
 			err = cmd.Wait()
-			if err != nil {
-				return
-			}
-
 		}
 	}
 
