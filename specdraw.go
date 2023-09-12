@@ -1,5 +1,11 @@
 package main
 
+/*
+@Author: Kimariyb
+@Institution: XiaMen University
+@Data: 2023-08-26
+*/
+
 import (
 	"bufio"
 	"fmt"
