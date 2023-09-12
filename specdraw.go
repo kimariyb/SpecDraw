@@ -1,6 +1,9 @@
 package main
 
 /*
+SpecDraw 是厦门大学 Kimariyb 开发的一款批量使用 KimariDraw 绘制各类曲线图的 Go 语言程序
+
+@Name: SpecDraw
 @Author: Kimariyb
 @Institution: XiaMen University
 @Data: 2023-08-26
@@ -76,7 +79,7 @@ func batchExecution(commandLines []string) {
 			// 等待进程完成
 			err = cmd.Wait()
 			if err != nil {
-				fmt.Println("Error:", err)
+				return
 			}
 
 		}
@@ -190,7 +193,7 @@ func showHead() {
 	timestamp := modTime.Format("2006-Jan-02")
 
 	fmt.Println("SpecDraw -- A script that automatically calls KimariDraw to generate pictures in batches")
-	fmt.Println("Version: v1.1.0, release date:", timestamp)
+	fmt.Println("Version: v1.1.1, release date:", timestamp)
 	fmt.Println("Developer: Kimariyb, Ryan Hsiun")
 	fmt.Println("Address: XiaMen University, School of Electronic Science and Engineering")
 	fmt.Println("Website: https://github.com/kimariyb/SpecDraw")
@@ -199,7 +202,7 @@ func showHead() {
 	now := time.Now().Format("Jan-02-2006, 15:04:05")
 
 	// 输出版权信息和问候语
-	fmt.Printf("(Copyright 2023 Kimariyb. Currently timeline: %s)\n", now)
+	fmt.Printf("(Copyright (C) 2023 Kimariyb. Currently timeline: %s)\n", now)
 	fmt.Println()
 }
 
